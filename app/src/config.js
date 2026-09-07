@@ -1,7 +1,7 @@
 export const CONFIG = {
   // Global settings
   difficulty: 'gentle', // 'gentle' or 'hard'
-  vaultCode: '143', // The 3-digit code for the physical vault
+  vaultCode: '19082026', // Anniversary date: 19.8.2026
   
   // Design palette - Little Einsteins vibe!
   colors: {
@@ -105,7 +105,11 @@ export const CONFIG = {
       "The suspect who is LEFT-HANDED did not go to an OUTDOORS location.",
       "The WOVEN item was found INDOORS.",
       "The VERY TALL suspect was seen carrying the HEAVY item.",
-      "The LONG item was definitely not taken to the SECLUDED location."
+      { 
+        isCipher: true,
+        encryptedText: "Wkh ORQJ lwhp zdv ghilqlwhob qrw wdnhq wr wkh VHFOXGHG orfdwlrq.",
+        shift: 3
+      }
     ],
     // The correct final deduction that unlocks the stage
     solution: {

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { User, Package, MapPin, ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { User, Package, MapPin, ArrowRight, Search, Key, X } from 'lucide-react';
 import { CONFIG } from '../config';
 
 export function StageBMurdle({ onComplete }) {
@@ -16,6 +16,31 @@ export function StageBMurdle({ onComplete }) {
   // Card UI State
   const [activeCategory, setActiveCategory] = useState('who'); // 'who', 'what', 'where'
   const [selectedCard, setSelectedCard] = useState(null);
+
+  // Decoder State
+  const [showDecoder, setShowDecoder] = useState(false);
+  const [cipherData, setCipherData] = useState(null);
+  const [decoderInput, setDecoderInput] = useState('');
+  const [decodedText, setDecodedText] = useState('');
+
+  // Caesar Cipher logic
+  useEffect(() => {
+    if (!cipherData) return;
+    const shiftAmount = -(cipherData.shift || 3);
+    const decoded = decoderInput.split('').map(char => {
+      if (char.match(/[a-z]/i)) {
+        const code = char.charCodeAt(0);
+        const isUpper = code >= 65 && code <= 90;
+        const base = isUpper ? 65 : 97;
+        let newCode = code - base + shiftAmount;
+        while (newCode < 0) newCode += 26;
+        newCode = newCode % 26;
+        return String.fromCharCode(base + newCode);
+      }
+      return char;
+    }).join('');
+    setDecodedText(decoded);
+  }, [decoderInput, cipherData]);
 
   const suspects = categories.who;
   const weapons = categories.what;
@@ -226,9 +251,29 @@ export function StageBMurdle({ onComplete }) {
           <div className="murdle-clues-section mb-8">
             <h3 className="murdle-clues-title">CLUES & EVIDENCE</h3>
             <ul className="murdle-clues-list">
-              {clues.map((clue, idx) => (
-                <li key={idx}><strong>{clue}</strong></li>
-              ))}
+              {clues.map((clue, idx) => {
+                if (typeof clue === 'object' && clue.isCipher) {
+                  return (
+                    <li key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <strong style={{ fontFamily: 'monospace', background: '#e0e0e0', padding: '4px 8px', borderRadius: '4px' }}>
+                        {clue.encryptedText}
+                      </strong>
+                      <button 
+                        className="murdle-btn black" 
+                        style={{ padding: '8px 12px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                        onClick={() => {
+                          setCipherData(clue);
+                          setDecoderInput(clue.encryptedText);
+                          setShowDecoder(true);
+                        }}
+                      >
+                        <Search size={16} /> Open Decoder
+                      </button>
+                    </li>
+                  );
+                }
+                return <li key={idx}><strong>{clue}</strong></li>;
+              })}
             </ul>
           </div>
 
@@ -257,18 +302,58 @@ export function StageBMurdle({ onComplete }) {
               className={`murdle-accuse-btn ${errorShake ? 'shake' : ''}`} 
               onClick={checkSolution}
             >
-              MAKE YOUR ACCUSATION
+              Solve the Mystery!
             </button>
           </div>
         </div>
       )}
 
       {isSuccess && (
-        <div className="hint-box mt-4" style={{ borderColor: 'var(--mint)' }}>
-          <h3 className="text-mint mb-4 text-center">Crystal {CONFIG.stageB.crystalDigit} Charged!</h3>
-          <p className="text-center"><strong>{CONFIG.stageB.revealMessage}</strong></p>
-          <div className="mt-8 text-center">
-            <button className="btn-primary" onClick={onComplete}>Unlock the Vault</button>
+        <div className="text-center success" style={{ padding: '20px', animation: 'popIn 0.5s ease-out' }}>
+          <div className="text-6xl mb-4" style={{ animation: 'bounce 1s infinite' }}>💎</div>
+          <h3 className="text-2xl font-bold text-mint mb-4">Murdle Solved!</h3>
+          <p className="text-lg mb-6 whitespace-pre-wrap">{CONFIG.stageB.revealMessage}</p>
+          <button className="btn-primary" style={{ marginTop: '24px' }} onClick={onComplete}>
+            Claim Crystal
+          </button>
+        </div>
+      )}
+
+      {/* DECODER MODAL */}
+      {showDecoder && cipherData && (
+        <div className="decoder-modal-overlay">
+          <div className="decoder-modal">
+            <button className="decoder-close" onClick={() => setShowDecoder(false)}>
+              <X size={24} />
+            </button>
+            <h2 className="text-center mb-4" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <Key /> Caesar Cipher Decoder
+            </h2>
+            <p className="mb-4 text-center">
+              A mysterious note was found! The thief used a <strong>Shift of {cipherData.shift}</strong> to scramble it.<br/>
+              <em>Hint: Shift every letter back by {cipherData.shift} in the alphabet.</em>
+            </p>
+            
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Encrypted Text:</label>
+              <textarea 
+                className="decoder-input" 
+                value={decoderInput}
+                onChange={e => setDecoderInput(e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Decoded Text (Live Translation):</label>
+              <div className="decoder-output">
+                {decodedText || "Type above to decode..."}
+              </div>
+            </div>
+            
+            <button className="murdle-btn black" style={{ width: '100%', marginTop: '24px' }} onClick={() => setShowDecoder(false)}>
+              Close Decoder
+            </button>
           </div>
         </div>
       )}

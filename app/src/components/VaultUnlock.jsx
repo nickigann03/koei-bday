@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { CONFIG } from '../config';
 
 export function VaultUnlock({ onLaunch }) {
-  const [code, setCode] = useState(['', '', '']);
+  const [code, setCode] = useState(['', '', '', '', '', '', '', '']);
   const [shake, setShake] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -32,13 +32,13 @@ export function VaultUnlock({ onLaunch }) {
 
   return (
     <div className={`mission-card ${isSuccess ? 'success' : ''}`}>
-      <h2 className="text-center text-rocket">The Vault</h2>
-      <p className="text-center mb-4">Enter the crystals you collected to unlock the vault.</p>
+      <h2 className="text-center text-rocket">The Final Vault</h2>
+      <p className="text-center mb-4">You've collected all the crystals to activate the keypad!<br/>To unlock the final surprise, enter the date our journey began (DDMMYYYY).</p>
 
       {!isSuccess && (
         <>
-          <div className={`keypad-display ${shake ? 'shake' : ''}`}>
-            {[0, 1, 2].map(idx => (
+          <div className={`keypad-display ${shake ? 'shake' : ''}`} style={{ flexWrap: 'wrap', gap: '8px' }}>
+            {[0, 1, 2, 3, 4, 5, 6, 7].map(idx => (
               <input
                 key={idx}
                 type="text"
@@ -48,12 +48,12 @@ export function VaultUnlock({ onLaunch }) {
                 value={code[idx]}
                 onChange={e => handleInput(idx, e.target.value)}
                 maxLength={1}
-                style={{ textAlign: 'center' }}
+                style={{ textAlign: 'center', width: '32px', height: '40px', fontSize: '20px' }}
               />
             ))}
           </div>
 
-          <div className="keypad-grid">
+          <div className="keypad-grid" style={{ maxWidth: '280px', margin: '0 auto' }}>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
               <button key={num} className="keypad-btn" onClick={() => {
                 const emptyIdx = code.findIndex(d => d === '');
@@ -77,10 +77,10 @@ export function VaultUnlock({ onLaunch }) {
             }}>DEL</button>
           </div>
           
-          {shake && <p className="text-center text-rocket mt-4">Not quite — check your crystals.</p>}
+          {shake && <p className="text-center text-rocket mt-4">Incorrect code — try again!</p>}
 
           <div className="mt-8 text-center">
-            <button className="btn-primary" onClick={attemptUnlock} disabled={code.join('').length !== 3}>
+            <button className="btn-primary" onClick={attemptUnlock} disabled={code.join('').length !== 8}>
               Unlock
             </button>
           </div>
