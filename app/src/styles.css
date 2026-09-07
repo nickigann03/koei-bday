@@ -1,0 +1,915 @@
+:root {
+  /* Vibrant, cool, pop colors */
+  --sky-top: #e6f2ff;
+  --sky-bot: #cce0ff;
+  
+  --cloud: #FFFFFF;
+  --ink: #2C3E50;
+  
+  --rocket: #FF4C4C;
+  --rocket-shadow: #CC0000;
+  
+  --sun: #FFD166;
+  --sun-shadow: #E5A900;
+  
+  --mint: #06D6A0;
+  --mint-shadow: #009970;
+  
+  --lilac: #B56576;
+  --lilac-shadow: #8A3A4A;
+  
+  /* Fonts */
+  --font-heading: 'Fredoka', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+  --font-body: 'Nunito', -apple-system, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  /* Prevent bounce scroll on iPad */
+  overflow: hidden; 
+  touch-action: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+button {
+  font-family: var(--font-heading);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  margin: 0 auto;
+  position: relative;
+  /* Cool gradient background applied here so it definitely shows */
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 100%);
+  background-image: 
+    radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.4) 0, rgba(255, 255, 255, 0.4) 40px, transparent 40px),
+    radial-gradient(circle at 75% 65%, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 80px, transparent 80px),
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.35) 0, rgba(255, 255, 255, 0.35) 30px, transparent 30px),
+    radial-gradient(circle at 25% 85%, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 40px, transparent 40px),
+    linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 100%);
+  overflow: hidden;
+}
+
+/* --- Shared Layout --- */
+
+.header {
+  padding: 32px 24px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.rocket-icon {
+  width: 64px;
+  height: 64px;
+  color: var(--rocket);
+  filter: drop-shadow(0 4px 0 var(--rocket-shadow));
+  user-select: none;
+  -webkit-user-select: none;
+  /* Make it bounce slightly like it's hovering */
+  animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(-5deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(-5deg); }
+}
+
+.rocket-launch-anim {
+  animation: launchRocket 1.5s forwards cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+
+@keyframes launchRocket {
+  0% { transform: translateY(0) scale(1) rotate(0); }
+  15% { transform: translateY(20px) scale(0.9) rotate(-10deg); }
+  100% { transform: translateY(-120vh) scale(1.5) rotate(15deg); }
+}
+
+.crystal-slots {
+  display: flex;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 12px 24px;
+  border-radius: 100px;
+  box-shadow: inset 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.crystal {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 24px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.crystal.uncharged {
+  background-color: rgba(0,0,0,0.2);
+  color: rgba(255,255,255,0.3);
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.3);
+}
+
+.crystal.charged {
+  background-color: var(--sun);
+  color: #B38600;
+  box-shadow: 0 6px 0 var(--sun-shadow), 0 0 20px rgba(255, 209, 102, 0.9);
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+  70% { transform: scale(1.3) rotate(15deg); }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.main-content {
+  flex-grow: 1;
+  min-height: 0;
+  padding: 16px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+.mission-card {
+  background-color: var(--cloud);
+  border-radius: 40px;
+  padding: 40px;
+  width: 100%;
+  box-shadow: 0 12px 0 rgba(0, 0, 0, 0.08), 0 24px 40px rgba(0, 40, 80, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.mission-card.success {
+  border: 4px solid var(--mint);
+  box-shadow: 0 12px 0 var(--mint-shadow), 0 24px 40px rgba(0, 40, 80, 0.2);
+}
+
+.mission-card h1 {
+  font-size: 32px;
+  line-height: 1.2;
+}
+.mission-card h2 {
+  font-size: 28px;
+}
+
+/* 3D Duolingo style buttons */
+.btn-primary {
+  background-color: var(--rocket);
+  color: white;
+  padding: 18px 32px;
+  border-radius: 24px;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  align-self: center;
+  box-shadow: 0 8px 0 var(--rocket-shadow);
+  position: relative;
+  top: 0;
+  transition: all 0.1s;
+}
+
+.btn-primary:active {
+  box-shadow: 0 0px 0 var(--rocket-shadow);
+  top: 8px;
+  transform: translateY(2px);
+}
+
+.btn-primary:disabled {
+  background-color: #E5E5EA;
+  box-shadow: 0 8px 0 #C7C7CC;
+  color: #8E8E93;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--sun);
+  color: var(--ink);
+  padding: 14px 28px;
+  border-radius: 20px;
+  font-size: 20px;
+  width: auto;
+  align-self: center;
+  box-shadow: 0 6px 0 var(--sun-shadow);
+  position: relative;
+  top: 0;
+  transition: all 0.1s;
+}
+
+.btn-secondary:active {
+  box-shadow: 0 0 0 var(--sun-shadow);
+  top: 6px;
+}
+
+.hint-box {
+  background-color: rgba(6, 214, 160, 0.1);
+  padding: 24px;
+  border-radius: 24px;
+  font-size: 18px;
+  color: var(--ink);
+  border: 3px dashed var(--mint);
+  margin-top: 16px;
+}
+
+/* --- Wordle Specific --- */
+
+.wordle-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 auto;
+}
+
+.wordle-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.wordle-cell {
+  width: 62px;
+  height: 62px;
+  border-radius: 0;
+  background-color: white;
+  border: 2px solid #D3D6DA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.wordle-cell.filled {
+  border: 2px solid #878A8C;
+  transform: scale(1.05);
+}
+
+.wordle-cell.correct {
+  background-color: var(--mint);
+  border-color: var(--mint);
+  color: white;
+  animation: flip 0.6s ease forwards;
+}
+
+.wordle-cell.present {
+  background-color: var(--sun);
+  border-color: var(--sun);
+  color: white;
+  animation: flip 0.6s ease forwards;
+}
+
+.wordle-cell.absent {
+  background-color: #787C7E;
+  border-color: #787C7E;
+  color: white;
+  animation: flip 0.6s ease forwards;
+}
+
+@keyframes flip {
+  0% { transform: rotateX(-90deg); opacity: 0; }
+  100% { transform: rotateX(0); opacity: 1; }
+}
+
+/* --- Acrostic Specific --- */
+
+.acrostic-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.acrostic-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  background: #F8F9FA;
+  padding: 12px;
+  border-radius: 20px;
+  transition: all 0.4s ease;
+}
+
+.acrostic-row.correct-row-container {
+  background: rgba(6, 214, 160, 0.1);
+  box-shadow: 0 4px 12px rgba(6, 214, 160, 0.2);
+}
+
+.acrostic-clue {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: right;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.acrostic-word {
+  display: flex;
+  gap: 6px;
+}
+
+.acrostic-cell {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background-color: white;
+  border: 2px solid #E5E5EA;
+  box-shadow: 0 3px 0 #E5E5EA;
+  text-align: center;
+  font-size: 22px;
+  font-family: var(--font-heading);
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--ink);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.acrostic-cell.correct-row-cell {
+  border-color: var(--mint);
+  box-shadow: 0 3px 0 var(--mint-shadow);
+  color: var(--mint-shadow);
+}
+
+.acrostic-cell:focus {
+  border-color: var(--sky-bot);
+  box-shadow: 0 0 0 4px rgba(47, 155, 254, 0.2);
+  transform: translateY(-2px);
+}
+
+.acrostic-cell.target-letter {
+  background-color: #FFF9E6;
+  border-color: var(--sun);
+  box-shadow: 0 3px 0 var(--sun-shadow);
+  color: #B38600;
+}
+
+.acrostic-cell.target-letter.correct {
+  background-color: var(--sun);
+  border-color: var(--sun-shadow);
+  color: var(--ink);
+  animation: bounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.5); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* --- Murdle Specific --- */
+
+.murdle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.murdle-grid-wrapper {
+  overflow-x: auto;
+  padding: 8px;
+}
+
+.murdle-grid {
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 0 #E5E5EA;
+  border: 4px solid var(--ink);
+  table-layout: fixed;
+  width: 100%;
+}
+
+.murdle-grid th, .murdle-grid td {
+  border: 2px solid var(--ink);
+  text-align: center;
+}
+
+.empty-header, .empty-block {
+  border: none !important;
+  background: transparent;
+}
+
+.category-header {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  padding: 8px;
+  background: #F2F2F7;
+  color: var(--ink);
+}
+
+.category-header-side {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  padding: 8px;
+  background: #F2F2F7;
+  color: var(--ink);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  width: 8%;
+}
+
+.item-header-top {
+  padding: 8px;
+  font-size: 14px;
+  height: 120px;
+  background: #F8F9FA;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: left;
+  width: 11%;
+}
+
+.item-header-side {
+  padding: 8px 12px;
+  font-size: 14px;
+  text-align: right !important;
+  background: #F8F9FA;
+  white-space: nowrap;
+  width: 26%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* CARDS SECTION */
+.murdle-cards-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.murdle-cards-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.murdle-card {
+  flex: 1;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: var(--font-heading);
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--ink);
+  transition: all 0.2s;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+}
+
+.murdle-card:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.murdle-card.crossed {
+  background: #E5E5EA;
+  color: #8E8E93;
+  text-decoration: line-through;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--rocket);
+  box-shadow: 0 0 0 var(--ink);
+  transform: translateY(3px);
+}
+
+.murdle-cell {
+  height: 44px;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--ink);
+}
+
+.murdle-cell:active {
+  background: #E5E5EA;
+}
+
+/* CLUES SECTION */
+.murdle-clues-section {
+  width: 100%;
+  background: #FFF9E6;
+  border: 4px solid var(--ink);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 0 var(--ink);
+}
+
+.murdle-clues-title {
+  text-align: center;
+  text-decoration: underline;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.murdle-clues-list {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.murdle-clues-list li {
+  margin-bottom: 12px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* ACCUSATION SECTION */
+.murdle-accusation-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.murdle-select {
+  width: 100%;
+  padding: 16px;
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  background: #F8F9FA;
+  box-shadow: 0 4px 0 var(--ink);
+  outline: none;
+  appearance: none;
+  text-align: center;
+  cursor: pointer;
+}
+
+.murdle-accuse-btn {
+  width: 100%;
+  padding: 16px;
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  background: #900C3F; /* Deep red matching screenshot */
+  box-shadow: 0 6px 0 var(--ink);
+  margin-top: 8px;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.murdle-accuse-btn:active {
+  transform: translateY(6px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.murdle-accuse-btn.shake {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* --- Vault Unlock --- */
+
+.keypad-display {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.digit-slot {
+  width: 80px;
+  height: 100px;
+  background-color: #F2F2F7;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  font-family: var(--font-heading);
+  border: 4px solid transparent;
+  box-shadow: inset 0 6px 12px rgba(0,0,0,0.1);
+  color: var(--ink);
+  outline: none;
+}
+
+.digit-slot.active {
+  border-color: var(--sky-bot);
+  background-color: white;
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.keypad-btn {
+  background-color: #F2F2F7;
+  color: var(--ink);
+  border: none;
+  height: 80px;
+  border-radius: 24px;
+  font-size: 36px;
+  font-family: var(--font-heading);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s;
+  box-shadow: 0 8px 0 #D1D1D6;
+  position: relative;
+  top: 0;
+}
+
+.keypad-btn:active {
+  box-shadow: 0 0 0 #D1D1D6;
+  top: 8px;
+  background-color: #E5E5EA;
+}
+
+/* Utils */
+.text-center { text-align: center; }
+.mt-4 { margin-top: 16px; }
+.mt-8 { margin-top: 32px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-8 { margin-bottom: 32px; }
+.text-rocket { color: var(--rocket); }
+.text-mint { color: var(--mint); }
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 16px 8px;
+    gap: 12px;
+  }
+  
+  .rocket-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .crystal-slots {
+    padding: 8px 16px;
+    gap: 12px;
+  }
+  
+  .crystal {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+
+  .mission-card {
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .mission-card h1 { font-size: 24px; }
+  .mission-card h2 { font-size: 20px; }
+  
+  .btn-primary, .btn-secondary {
+    padding: 14px 20px;
+    font-size: 18px;
+    border-radius: 16px;
+  }
+  
+  /* Wordle */
+  .wordle-cell {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+  
+  .wordle-row {
+    gap: 6px;
+  }
+  
+  /* Acrostic */
+  .acrostic-cell {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+  
+  .acrostic-row {
+    padding: 8px;
+    gap: 8px;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .acrostic-clue {
+    font-size: 14px;
+  }
+  
+  /* Murdle */
+  .murdle-card {
+    font-size: 12px;
+    padding: 6px 2px;
+    border-width: 2px;
+    min-height: 40px;
+  }
+  
+  .murdle-cell {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+
+  .item-header-top {
+    height: 90px;
+    font-size: 12px;
+  }
+
+  .item-header-side {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .category-header {
+    font-size: 12px;
+    padding: 4px;
+  }
+  
+  .murdle-select, .murdle-accuse-btn {
+    padding: 12px;
+    font-size: 16px;
+  }
+  
+  /* Vault Keypad */
+  .digit-slot {
+    width: 60px;
+    height: 76px;
+    font-size: 40px;
+  }
+  
+  .keypad-display {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  
+  .keypad-grid {
+    gap: 12px;
+  }
+  
+  .keypad-btn {
+    height: 60px;
+    font-size: 28px;
+    border-radius: 16px;
+  }
+}
+
+/* --- Flip Cards --- */
+.flip-card-container {
+  perspective: 1000px;
+  width: 120px;
+  height: 160px;
+  margin: 0 auto;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+/* --- Murdle Card UI Overhaul --- */
+
+.murdle-inv-card {
+  width: 130px;
+  height: 180px;
+  background-color: #FAFAFA; /* Off-white / ivory */
+  border: 4px solid var(--ink);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.murdle-inv-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.murdle-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 12px;
+  border: 4px solid var(--rocket);
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 2px;
+  background-color: white;
+}
+
+.murdle-tabs span {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.murdle-tabs span.active {
+  color: var(--rocket);
+  border-bottom: 2px dotted var(--rocket);
+}
+
+.murdle-detail-card {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #FAFAFA; /* Ivory background */
+  border: 6px solid var(--ink);
+  border-radius: 12px;
+  padding: 32px 24px;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.murdle-btn.black {
+  background-color: var(--ink);
+  color: white;
+  border: none;
+  padding: 16px;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--sky-bot);
+  transition: all 0.1s;
+}
+
+.murdle-btn.black:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--sky-bot);
+}
