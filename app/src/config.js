@@ -109,7 +109,8 @@ export const CONFIG = {
         isCipher: true,
         encryptedText: "Wkh ORQJ lwhp zdv ghilqlwhob qrw wdnhq wr wkh VHFOXGHG orfdwlrq.",
         shift: 3
-      }
+      },
+      "An anonymous tip just came in: The stolen cake is definitely hidden at the INDOORS location!"
     ],
     // The correct final deduction that unlocks the stage
     solution: {
