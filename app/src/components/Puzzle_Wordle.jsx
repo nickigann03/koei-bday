@@ -98,14 +98,21 @@ export function PuzzleWordle({ onComplete }) {
     else if (status === 'absent') { bgColor = '#787C7E'; color = 'white'; }
     
     return {
-      padding: key.length > 1 ? '12px 10px' : '12px 14px',
+      flex: key.length > 1 ? 1.5 : 1,
+      height: '58px',
+      padding: '0',
+      margin: '0',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       borderRadius: '8px',
       border: 'none',
       backgroundColor: bgColor,
       color: color,
       fontWeight: 'bold',
-      fontSize: '16px',
-      fontFamily: 'var(--font-heading)'
+      fontSize: key.length > 1 ? '12px' : '18px',
+      fontFamily: 'var(--font-heading)',
+      cursor: 'pointer'
     };
   };
 
@@ -137,9 +144,9 @@ export function PuzzleWordle({ onComplete }) {
       </div>
 
       {!isSuccess && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center', width: '100%', maxWidth: '500px', margin: '0 auto' }}>
           {keyboardRows.map((row, i) => (
-            <div key={i} style={{ display: 'flex', gap: '6px' }}>
+            <div key={i} style={{ display: 'flex', gap: '4px', width: '100%', justifyContent: 'center' }}>
               {row.map(key => (
                 <button
                   key={key}
