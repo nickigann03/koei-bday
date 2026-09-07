@@ -664,7 +664,7 @@ button {
   background-color: #F2F2F7;
   color: var(--ink);
   border: none;
-  height: 80px;
+  aspect-ratio: 1 / 1;
   border-radius: 24px;
   font-size: 36px;
   font-family: var(--font-heading);
@@ -810,7 +810,6 @@ button {
   }
   
   .keypad-btn {
-    height: 60px;
     font-size: 28px;
     border-radius: 16px;
   }
