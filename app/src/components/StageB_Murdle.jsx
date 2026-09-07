@@ -22,11 +22,12 @@ export function StageBMurdle({ onComplete }) {
   const [cipherData, setCipherData] = useState(null);
   const [decoderInput, setDecoderInput] = useState('');
   const [decodedText, setDecodedText] = useState('');
+  const [userShift, setUserShift] = useState(0);
 
   // Caesar Cipher logic
   useEffect(() => {
     if (!cipherData) return;
-    const shiftAmount = -(cipherData.shift || 3);
+    const shiftAmount = -userShift;
     const decoded = decoderInput.split('').map(char => {
       if (char.match(/[a-z]/i)) {
         const code = char.charCodeAt(0);
@@ -40,7 +41,7 @@ export function StageBMurdle({ onComplete }) {
       return char;
     }).join('');
     setDecodedText(decoded);
-  }, [decoderInput, cipherData]);
+  }, [decoderInput, cipherData, userShift]);
 
   const suspects = categories.who;
   const weapons = categories.what;
@@ -330,9 +331,16 @@ export function StageBMurdle({ onComplete }) {
               <Key /> Caesar Cipher Decoder
             </h2>
             <p className="mb-4 text-center">
-              A mysterious note was found! The thief used a <strong>Shift of {cipherData.shift}</strong> to scramble it.<br/>
-              <em>Hint: Shift every letter back by {cipherData.shift} in the alphabet.</em>
+              A mysterious note was found! But what is the secret shift?<br/>
+              <em>Hint: Adjust the shift dial until the text makes sense!</em>
             </p>
+
+            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center' }}>
+              <label style={{ fontWeight: 'bold' }}>Cipher Shift:</label>
+              <button className="murdle-btn black" style={{ padding: '4px 12px', minWidth: '40px' }} onClick={() => setUserShift(s => s - 1)}>-</button>
+              <span style={{ fontSize: '20px', fontWeight: 'bold', width: '30px', textAlign: 'center' }}>{userShift}</span>
+              <button className="murdle-btn black" style={{ padding: '4px 12px', minWidth: '40px' }} onClick={() => setUserShift(s => s + 1)}>+</button>
+            </div>
             
             <div style={{ marginBottom: '16px' }}>
               <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Encrypted Text:</label>
