@@ -95,13 +95,11 @@ export function VaultUnlock({ onLaunch }) {
             style={{ width: '100%', borderRadius: '12px', marginBottom: '20px', boxShadow: 'var(--shadow)' }}
           />
           <h2 className="text-rocket mb-4">Mission Completion!</h2>
-          <p style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--ink)' }}>
-            We've got the mission! We've got the mission!
-            <br />
-            Mission completion! 🎶
+          <p style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--ink)', marginBottom: '16px' }}>
+            Happiest birthday to my little koei. You have completed your birthday mission. Claim your birthday kisses from your girlfriend!
           </p>
-          <p className="mt-4" style={{ fontStyle: 'italic', color: 'var(--text)' }}>
-            *pat pat pat pat pat pat...* 🚀
+          <p style={{ fontSize: '18px', fontStyle: 'italic', color: 'var(--text)', backgroundColor: '#fff0f5', padding: '16px', borderRadius: '8px', border: '2px dashed var(--rocket)' }}>
+            "My baby. I love you so much and I am so lucky that 23 years ago this precious lil girl came into the world and I'm so happy she came into my life. I'm the luckiest girl alive."
           </p>
         </div>
       )}
