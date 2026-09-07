@@ -123,7 +123,7 @@ export function StageBMurdle({ onComplete }) {
 
   return (
     <div className={`mission-card ${isSuccess ? 'success' : ''}`}>
-      <h2 className="text-center text-rocket">Part 3: The Missing Cake</h2>
+      <h2 className="text-center text-rocket">Part 3: The Birthday Murder</h2>
       <p className="text-center mb-6">{story}</p>
 
       {!isSuccess && (

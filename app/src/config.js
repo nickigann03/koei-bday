@@ -47,11 +47,11 @@ export const CONFIG = {
   },
 
   // ----------------------------------------------------
-  // STAGE B: MURDLE (The Missing Birthday Cake)
+  // STAGE B: MURDLE (The Birthday Murder)
   // ----------------------------------------------------
   stageB: {
     crystalDigit: '3',
-    story: "Disaster has struck! The birthday girl's cake has been stolen! Use the clues below to deduce who took it, what they used to carry it, and where they hid it. Hint: The clues don't use names—you must tap the cards and read their traits to decode them!",
+    story: "Disaster has struck! A murder has occurred on the eve of the birthday! Use the clues below to deduce the killer, the murder weapon, and where they left the body. Hint: The clues don't use names—you must tap the cards and read their traits to decode them!",
     categories: {
       who: ['The Milkman', 'The Baker', 'The Neighbor'],
       what: ['Heavy Package', 'Stale Baguette', 'Picnic Basket'],
@@ -74,15 +74,15 @@ export const CONFIG = {
       },
       what: {
         'Heavy Package': {
-          text: "A densely packed box wrapped in brown paper and twine, heavy enough to fit a multi-tier cake.",
+          text: "A densely packed box wrapped in brown paper and twine, heavy enough to bludgeon someone.",
           traits: "HEAVY • CARDBOARD"
         },
         'Stale Baguette': {
-          text: "A loaf of bread that has been left out for at least three days. It is rock solid.",
+          text: "A loaf of bread that has been left out for at least three days. It is rock solid and deadly.",
           traits: "MEDIUM-WEIGHT • LONG"
         },
         'Picnic Basket': {
-          text: "A classic woven basket with a checkered cloth. It's the perfect size for smuggling baked goods.",
+          text: "A classic woven basket with a checkered cloth. It's the perfect size for smuggling a severed head.",
           traits: "LIGHT-WEIGHT • WOVEN"
         }
       },
@@ -110,7 +110,7 @@ export const CONFIG = {
         encryptedText: "Wkh ORQJ lwhp zdv ghilqlwhob qrw wdnhq wr wkh VHFOXGHG orfdwlrq.",
         shift: 3
       },
-      "An anonymous tip just came in: The stolen cake is definitely hidden at the INDOORS location!"
+      "An anonymous tip just came in: The victim's body was definitely found at the INDOORS location!"
     ],
     // The correct final deduction that unlocks the stage
     solution: {
@@ -119,6 +119,6 @@ export const CONFIG = {
       where: 'El Camino Restaurant'
     },
     // The message revealed after correctly solving
-    revealMessage: "You cracked the case! The Baker hid the cake in the Picnic Basket at El Camino Restaurant! Crystal #3 is yours! 💎\n\nWait... El Camino Restaurant? That's right! Get ready, because your birthday dinner tonight is at a MEXICAN RESTAURANT! 🌮🎉"
+    revealMessage: "You cracked the case! The Baker murdered the victim with a Picnic Basket and left the body at El Camino Restaurant! Crystal #3 is yours! 💎\n\nWait... El Camino Restaurant? That's right! Get ready, because your birthday dinner tonight is at a MEXICAN RESTAURANT! 🌮🎉"
   }
 };
